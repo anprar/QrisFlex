@@ -341,7 +341,9 @@ export async function createGenerateEvent(input: {
     await sql`UPDATE qris_sources SET usage_count = usage_count + 1, updated_at = NOW() WHERE id = ${record.sourceId}`;
   }
 
-  await kv.set(`analytics:last:${record.ownerId ?? "guest"}`, Date.now()).catch(() => null);
+  if (featureFlags.kv) {
+    await kv.set(`analytics:last:${record.ownerId ?? "guest"}`, Date.now()).catch(() => null);
+  }
 
   return record;
 }

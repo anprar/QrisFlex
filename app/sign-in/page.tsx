@@ -18,10 +18,10 @@ export default async function SignInPage() {
   }
 
   return (
-    <div className="pb-10">
+    <div className="overflow-x-hidden pb-10">
       <SiteHeader />
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <section className="grid min-h-[calc(100vh-220px)] items-center gap-8 py-12 lg:grid-cols-[1fr_0.9fr]">
+        <section className="grid min-h-[calc(100vh-220px)] min-w-0 items-center gap-8 py-12 lg:grid-cols-[1fr_0.9fr]">
           <div className="space-y-6">
             <p className="text-sm uppercase tracking-[0.32em] text-muted-foreground">Dashboard access</p>
             <h1 className="font-display max-w-3xl text-5xl font-semibold tracking-tight sm:text-6xl">

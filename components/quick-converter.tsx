@@ -252,7 +252,7 @@ export function QuickConverter() {
   });
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+    <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr] min-w-0">
       <Card className="hero-shell overflow-hidden rounded-[36px] border border-white/35 bg-gradient-to-br from-white/70 via-white/50 to-white/35 dark:from-white/6 dark:via-white/5 dark:to-white/4">
         <CardHeader>
           <div className="flex flex-wrap items-center gap-3">
@@ -302,17 +302,17 @@ export function QuickConverter() {
             ))}
           </div>
 
-          <form className="grid gap-4 md:grid-cols-2" onSubmit={generate}>
-            <div className="space-y-2 md:col-span-1">
+          <form className="grid gap-4 sm:grid-cols-2" onSubmit={generate}>
+            <div className="space-y-2 sm:col-span-1">
               <label className="text-sm font-semibold">Nominal (Rp)</label>
               <Input inputMode="numeric" placeholder="25000" {...form.register("amount")} />
               {form.formState.errors.amount ? <p className="text-sm text-danger">{form.formState.errors.amount.message}</p> : null}
             </div>
-            <div className="space-y-2 md:col-span-1">
+            <div className="space-y-2 sm:col-span-1">
               <label className="text-sm font-semibold">Fee</label>
-              <div className="grid grid-cols-[150px_1fr] gap-3">
+              <div className="grid grid-cols-[140px_1fr] gap-3">
                 <select
-                  className="h-12 rounded-2xl border border-border bg-white/55 px-4 text-sm outline-none focus:border-primary focus:shadow-[0_0_0_4px_var(--ring)] dark:bg-white/5"
+                  className="h-12 rounded-2xl border border-border bg-white/55 px-4 text-sm text-foreground outline-none transition focus:border-primary focus:shadow-[0_0_0_4px_var(--ring)] dark:bg-white/8"
                   {...form.register("feeType")}
                 >
                   <option value="none">Tanpa fee</option>
@@ -323,11 +323,11 @@ export function QuickConverter() {
               </div>
               {form.formState.errors.feeValue ? <p className="text-sm text-danger">{form.formState.errors.feeValue.message}</p> : null}
             </div>
-            <div className="space-y-2 md:col-span-2">
+            <div className="space-y-2 sm:col-span-2">
               <label className="text-sm font-semibold">Catatan transaksi</label>
               <Textarea placeholder="Contoh: INV-2026-001" rows={4} {...form.register("notes")} />
             </div>
-            <div className="flex flex-wrap items-center gap-3 md:col-span-2">
+            <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
               <Button disabled={isGenerating} size="lg" type="submit">
                 {isGenerating ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                 Generate QR Dinamis

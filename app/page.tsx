@@ -34,10 +34,10 @@ const featureHighlights = [
 
 export default function Home() {
   return (
-    <div className="pb-10">
+    <div className="overflow-x-hidden pb-10">
       <SiteHeader />
-      <main className="mx-auto flex w-full max-w-7xl flex-col gap-16 px-4 sm:px-6 lg:px-8">
-        <section className="relative overflow-hidden rounded-[42px] border border-white/35 bg-gradient-to-br from-[#fbf6ec]/70 via-[#fff8ef]/40 to-[#d5f6e8]/30 px-6 py-8 shadow-[0_30px_100px_rgba(19,41,33,0.12)] sm:px-10 sm:py-12 dark:from-[#0c1714]/80 dark:via-[#0d1b15]/60 dark:to-[#0a1e1a]/60">
+      <main className="mx-auto flex w-full max-w-7xl flex-col gap-16 overflow-x-hidden px-4 sm:px-6 lg:px-8">
+        <section className="relative overflow-hidden rounded-[42px] border border-white/35 bg-gradient-to-br from-[#fbf6ec]/70 via-[#fff8ef]/40 to-[#d5f6e8]/30 px-6 py-8 shadow-[0_30px_100px_rgba(19,41,33,0.12)] sm:px-10 sm:py-12 dark:from-[#0d1d16]/90 dark:via-[#0e2018]/75 dark:to-[#0c2420]/70">
           <div className="mb-10 flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap gap-3">
               <Badge>Biaya gratis mulai sekarang</Badge>
@@ -58,7 +58,7 @@ export default function Home() {
           <QuickConverter />
         </section>
 
-        <section className="grid gap-6 xl:grid-cols-[1fr_1.2fr]">
+        <section className="grid gap-6 min-w-0 xl:grid-cols-[1fr_1.2fr]">
           <Card className="rounded-[34px] border border-white/30 bg-gradient-to-br from-primary/10 to-secondary/15">
             <CardHeader>
               <CardDescription>Why QrisFlex wins</CardDescription>
@@ -89,7 +89,7 @@ export default function Home() {
           <HowItWorksCarousel />
         </section>
 
-        <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+        <section className="grid gap-5 md:grid-cols-2 min-w-0 xl:grid-cols-4">
           {featureHighlights.map((item) => {
             const Icon = item.icon;
             return (
@@ -106,7 +106,7 @@ export default function Home() {
           })}
         </section>
 
-        <section className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+        <section className="grid gap-6 min-w-0 xl:grid-cols-[1.05fr_0.95fr]">
           <Card className="overflow-hidden rounded-[34px] bg-gradient-to-br from-[#0d1714] to-[#10211b] text-white">
             <CardHeader>
               <CardDescription className="text-white/70">For growth teams</CardDescription>

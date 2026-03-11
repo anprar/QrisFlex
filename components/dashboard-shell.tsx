@@ -74,7 +74,7 @@ export function DashboardShell({ initialData }: { initialData: DashboardData }) 
   const sources = initialData.sources;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 min-w-0">
       <motion.section
         animate={{ opacity: 1, y: 0 }}
         className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"
@@ -141,7 +141,7 @@ export function DashboardShell({ initialData }: { initialData: DashboardData }) 
           </CardHeader>
           <CardContent className="space-y-3">
             {history.map((item) => (
-              <div className="grid gap-3 rounded-[28px] border border-border px-4 py-4 md:grid-cols-[1.2fr_repeat(4,minmax(0,1fr))]" key={item.id}>
+              <div className="grid gap-3 rounded-[28px] border border-border px-4 py-4 xl:grid-cols-[1.2fr_repeat(4,minmax(0,1fr))]" key={item.id}>
                 <div>
                   <p className="font-semibold">{item.merchantName}</p>
                   <p className="text-sm text-muted-foreground">{formatDateTime(item.createdAt)}</p>

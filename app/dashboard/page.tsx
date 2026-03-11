@@ -19,7 +19,7 @@ export default async function DashboardPage() {
   ]);
 
   return (
-    <div className="pb-10">
+    <div className="overflow-x-hidden pb-10">
       <SiteHeader />
       <main className="mx-auto w-full max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8">
         <section className="flex flex-col gap-4 rounded-[36px] border border-white/30 bg-gradient-to-br from-white/55 to-white/35 px-6 py-8 dark:from-white/6 dark:to-white/4 sm:px-8">
