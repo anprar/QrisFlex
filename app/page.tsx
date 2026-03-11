@@ -58,13 +58,13 @@ export default function Home() {
           <QuickConverter />
         </section>
 
-        <section className="grid gap-6 min-w-0 xl:grid-cols-[1fr_1.2fr]">
-          <Card className="flex flex-col rounded-[34px] border border-white/30 bg-gradient-to-br from-primary/10 to-secondary/15">
+        <section className="grid items-start gap-6 min-w-0 xl:grid-cols-[1fr_1.2fr]">
+          <Card className="rounded-[34px] border border-white/30 bg-gradient-to-br from-primary/10 to-secondary/15">
             <CardHeader>
               <CardDescription>Kenapa QrisFlex?</CardDescription>
               <CardTitle className="text-4xl">Lebih cepat, lebih fleksibel.</CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-1 flex-col justify-between space-y-6 text-base leading-8 text-muted-foreground">
+            <CardContent className="space-y-6 text-base leading-8 text-muted-foreground">
               <div className="space-y-4">
                 <p>
                   QrisFlex dirancang agar siapa saja bisa langsung pakai — kasir, UMKM, developer, hingga pemilik toko online — tanpa perlu daftar atau beli lisensi.

@@ -1,21 +1,20 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Download, ImageUp, LoaderCircle, QrCode, Share2, ShieldCheck, Sparkles } from "lucide-react";
+import { Clock, Download, ImageUp, LoaderCircle, QrCode, Share2, ShieldCheck, Sparkles } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
+import QRCode from "qrcode";
+import { QRCodeSVG } from "qrcode.react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import * as ReactDOMServer from "react-dom/server";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Clock } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { enqueueOfflineItem } from "@/hooks/use-offline-queue";
 import { generateDynamicQris } from "@/lib/qris/generator";
@@ -51,6 +50,54 @@ interface GeneratedState {
   expiryLabel: string;
 }
 
+const QR_DARK_COLOR = "#10211b";
+const QR_LIGHT_COLOR = "#ffffffff";
+
+function sanitizeFileName(value: string) {
+  return value
+    .trim()
+    .replace(/[^a-zA-Z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .toLowerCase();
+}
+
+function triggerDownload(url: string, filename: string) {
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.rel = "noopener";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+async function createPngDataUrl(payload: string, size: number) {
+  return QRCode.toDataURL(payload, {
+    width: size,
+    margin: 2,
+    errorCorrectionLevel: "H",
+    color: {
+      dark: QR_DARK_COLOR,
+      light: QR_LIGHT_COLOR,
+    },
+  });
+}
+
+async function createSvgMarkup(payload: string, size: number) {
+  const svg = await QRCode.toString(payload, {
+    type: "svg",
+    width: size,
+    margin: 2,
+    errorCorrectionLevel: "H",
+    color: {
+      dark: QR_DARK_COLOR,
+      light: QR_LIGHT_COLOR,
+    },
+  });
+
+  return svg.startsWith("<?xml") ? svg : `<?xml version="1.0" encoding="UTF-8"?>\n${svg}`;
+}
+
 function toDataUrl(file: File) {
   return new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
@@ -68,6 +115,7 @@ export function QuickConverter() {
   const [generated, setGenerated] = useState<GeneratedState | null>(null);
   const [isDecoding, setIsDecoding] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   
   const [downloadSize, setDownloadSize] = useState<"256" | "512" | "1024" | "2048">("512");
   const [downloadFormat, setDownloadFormat] = useState<"png" | "svg">("png");
@@ -108,6 +156,17 @@ export function QuickConverter() {
 
     return feeType === "rp" ? `Fee Rp ${feeValue ?? 0}` : `Fee ${feeValue ?? 0}%`;
   }, [feeType, feeValue]);
+
+  const generatedFileBaseName = useMemo(() => {
+    if (!generated) {
+      return "qrisflex-qr-dynamic";
+    }
+
+    const merchantName = sanitizeFileName(generated.merchant.name || "merchant");
+    const amountLabel = generated.total.toString();
+
+    return `qrisflex-${merchantName}-${amountLabel}`;
+  }, [generated]);
 
   const applyPayload = useCallback((payload: string) => {
     const parsed = parseQrisPayload(payload);
@@ -380,7 +439,15 @@ export function QuickConverter() {
             {generated ? (
               <>
                 <div className="flex justify-center">
-                  <QRCodeCanvas fgColor="#10211b" id="qrisflex-generated-canvas" includeMargin level="H" size={220} style={{ maxWidth: "100%", height: "auto" }} value={generated.payload} />
+                  <QRCodeSVG
+                    bgColor="#ffffff"
+                    fgColor={QR_DARK_COLOR}
+                    includeMargin
+                    level="H"
+                    size={220}
+                    style={{ maxWidth: "100%", height: "auto" }}
+                    value={generated.payload}
+                  />
                 </div>
                 <div className="mt-4 space-y-1">
                   <p className="font-display text-3xl font-semibold">{formatCurrency(generated.total)}</p>
@@ -390,7 +457,7 @@ export function QuickConverter() {
             ) : sourcePayload ? (
               <>
                 <div className="flex justify-center">
-                  <QRCodeSVG includeMargin level="H" size={220} style={{ maxWidth: "100%", height: "auto" }} value={sourcePayload} />
+                  <QRCodeSVG bgColor="#ffffff" fgColor={QR_DARK_COLOR} includeMargin level="H" size={220} style={{ maxWidth: "100%", height: "auto" }} value={sourcePayload} />
                 </div>
                 <p className="mt-4 text-sm text-muted-foreground">QR statis terdeteksi. Isi nominal lalu generate.</p>
               </>
@@ -465,56 +532,41 @@ export function QuickConverter() {
                 <div className="grid gap-3 sm:grid-cols-2">
                   <Button
                     className="w-full text-base font-semibold"
+                    disabled={isDownloading}
                     size="lg"
                     type="button"
-                    onClick={() => {
+                    onClick={async () => {
+                      if (!generated) {
+                        return;
+                      }
+
+                      setIsDownloading(true);
+
                       try {
                         const sizeNum = parseInt(downloadSize, 10);
-                        const fileName = `QRIS-${generated.merchant.name.replace(/[^a-zA-Z0-9]+/g, "-")}-${Date.now()}.${downloadFormat}`;
-                        
-                        // Buat elemen <a> untuk trigger download
-                        const link = document.createElement("a");
-                        link.download = fileName;
-
-                        const svgHtml = ReactDOMServer.renderToString(
-                          <QRCodeSVG fgColor="#10211b" includeMargin level="H" size={sizeNum} value={generated.payload} />
-                        );
-                        // Tambahkan xmlns wajib agar dikenali browser sebagai gambar vektor, bukan sekadar XML
-                        const finalSvg = svgHtml.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ');
+                        const fileName = `${generatedFileBaseName}-${sizeNum}.${downloadFormat}`;
 
                         if (downloadFormat === "png") {
-                          // Render vektor SVG ke dalam Image native agar resolusi sebesar apapun tetap sangat tajam/HD
-                          const img = new window.Image();
-                          img.onload = () => {
-                            const canvas = document.createElement("canvas");
-                            canvas.width = sizeNum;
-                            canvas.height = sizeNum;
-                            const ctx = canvas.getContext("2d");
-                            if (ctx) {
-                              ctx.fillStyle = "#ffffff";
-                              ctx.fillRect(0, 0, sizeNum, sizeNum);
-                              ctx.drawImage(img, 0, 0, sizeNum, sizeNum);
-                              
-                              link.href = canvas.toDataURL("image/png", 1.0);
-                              link.click();
-                              toast.success(`Berhasil mengunduh PNG resolusi HD (${downloadSize}px).`);
-                            }
-                          };
-                          img.onerror = () => toast.error("Gagal memproses PNG.");
-                          img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(finalSvg);
+                          const pngDataUrl = await createPngDataUrl(generated.payload, sizeNum);
+                          triggerDownload(pngDataUrl, fileName);
+                          toast.success(`PNG tajam ${sizeNum}x${sizeNum} berhasil diunduh.`);
                         } else {
-                          const svgBlob = new Blob([finalSvg], { type: "image/svg+xml;charset=utf-8" });
-                          link.href = URL.createObjectURL(svgBlob);
-                          link.click();
-                          toast.success(`Berhasil mengunduh SVG murni (${downloadSize}px).`);
+                          const svgMarkup = await createSvgMarkup(generated.payload, sizeNum);
+                          const svgBlob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
+                          const svgUrl = URL.createObjectURL(svgBlob);
+                          triggerDownload(svgUrl, fileName);
+                          window.setTimeout(() => URL.revokeObjectURL(svgUrl), 1000);
+                          toast.success(`SVG vector ${sizeNum}px berhasil diunduh.`);
                         }
-                      } catch {
-                        toast.error("Gagal mengunduh gambar.");
+                      } catch (error) {
+                        toast.error(error instanceof Error ? error.message : "Gagal mengunduh gambar.");
+                      } finally {
+                        setIsDownloading(false);
                       }
                     }}
                   >
-                    <Download className="h-5 w-5" />
-                    Unduh {downloadFormat.toUpperCase()}
+                    {isDownloading ? <LoaderCircle className="h-5 w-5 animate-spin" /> : <Download className="h-5 w-5" />}
+                    Unduh {downloadFormat.toUpperCase()} Tajam
                   </Button>
                   <Button
                     className="w-full text-base font-semibold"
@@ -544,19 +596,32 @@ export function QuickConverter() {
                   </Button>
                 </div>
                 <div className="mt-2 text-center text-sm text-muted-foreground">
-                  Gagal klik tombol? <button 
-                    className="underline hover:text-foreground"
-                    onClick={() => {
-                      const canvas = document.getElementById("qrisflex-generated-canvas") as HTMLCanvasElement | null;
-                      if (canvas) {
-                        const win = window.open("");
-                        if (win) {
-                          win.document.write(`<img src="${canvas.toDataURL("image/png")}" alt="QRIS"/>`);
-                        }
-                      }
-                    }}
-                    type="button"
-                  >Buka gambar di tab baru</button>
+                   Gagal klik tombol? <button 
+                     className="underline hover:text-foreground"
+                     onClick={async () => {
+                       if (!generated) {
+                         return;
+                       }
+
+                       const sizeNum = parseInt(downloadSize, 10);
+
+                       if (downloadFormat === "svg") {
+                         const svgMarkup = await createSvgMarkup(generated.payload, sizeNum);
+                         const svgBlob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
+                         const svgUrl = URL.createObjectURL(svgBlob);
+                         window.open(svgUrl, "_blank", "noopener,noreferrer");
+                         window.setTimeout(() => URL.revokeObjectURL(svgUrl), 4000);
+                         return;
+                       }
+
+                       const pngDataUrl = await createPngDataUrl(generated.payload, sizeNum);
+                       const win = window.open("", "_blank", "noopener,noreferrer");
+                       if (win) {
+                         win.document.write(`<img src="${pngDataUrl}" alt="QRIS" style="max-width:100%;height:auto;display:block;margin:auto"/>`);
+                       }
+                     }}
+                     type="button"
+                   >Buka gambar di tab baru</button>
                 </div>
               </div>
             </div>
