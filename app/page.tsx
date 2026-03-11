@@ -59,7 +59,7 @@ export default function Home() {
         </section>
 
         <section className="grid gap-6 min-w-0 xl:grid-cols-[1fr_1.2fr]">
-          <Card className="rounded-[34px] border border-white/30 bg-gradient-to-br from-primary/10 to-secondary/15">
+          <Card className="h-fit rounded-[34px] border border-white/30 bg-gradient-to-br from-primary/10 to-secondary/15">
             <CardHeader>
               <CardDescription>Kenapa QrisFlex?</CardDescription>
               <CardTitle className="text-4xl">Lebih cepat, lebih fleksibel.</CardTitle>

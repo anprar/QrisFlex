@@ -476,29 +476,38 @@ export function QuickConverter() {
                         const link = document.createElement("a");
                         link.download = fileName;
 
-                        if (downloadFormat === "png") {
-                          const tempCanvas = document.createElement("canvas");
-                          tempCanvas.width = sizeNum;
-                          tempCanvas.height = sizeNum;
-                          const ctx = tempCanvas.getContext("2d");
-                          
-                          const originalCanvas = document.getElementById("qrisflex-generated-canvas") as HTMLCanvasElement | null;
-                          if (!originalCanvas || !ctx) throw new Error("Gagal mengambil gambar referensi");
-                          
-                          ctx.imageSmoothingEnabled = false;
-                          ctx.drawImage(originalCanvas, 0, 0, sizeNum, sizeNum);
-                          
-                          link.href = tempCanvas.toDataURL("image/png");
-                        } else {
-                          const svgHtml = ReactDOMServer.renderToString(
-                            <QRCodeSVG fgColor="#10211b" id="qrisflex-download-svg" includeMargin level="H" size={sizeNum} value={generated.payload} />
-                          );
-                          const svgBlob = new Blob([svgHtml], { type: "image/svg+xml;charset=utf-8" });
-                          link.href = URL.createObjectURL(svgBlob);
-                        }
+                        const svgHtml = ReactDOMServer.renderToString(
+                          <QRCodeSVG fgColor="#10211b" includeMargin level="H" size={sizeNum} value={generated.payload} />
+                        );
+                        // Tambahkan xmlns wajib agar dikenali browser sebagai gambar vektor, bukan sekadar XML
+                        const finalSvg = svgHtml.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ');
 
-                        link.click();
-                        toast.success(`Berhasil mengunduh ${downloadFormat.toUpperCase()} (${downloadSize}px).`);
+                        if (downloadFormat === "png") {
+                          // Render vektor SVG ke dalam Image native agar resolusi sebesar apapun tetap sangat tajam/HD
+                          const img = new window.Image();
+                          img.onload = () => {
+                            const canvas = document.createElement("canvas");
+                            canvas.width = sizeNum;
+                            canvas.height = sizeNum;
+                            const ctx = canvas.getContext("2d");
+                            if (ctx) {
+                              ctx.fillStyle = "#ffffff";
+                              ctx.fillRect(0, 0, sizeNum, sizeNum);
+                              ctx.drawImage(img, 0, 0, sizeNum, sizeNum);
+                              
+                              link.href = canvas.toDataURL("image/png", 1.0);
+                              link.click();
+                              toast.success(`Berhasil mengunduh PNG resolusi HD (${downloadSize}px).`);
+                            }
+                          };
+                          img.onerror = () => toast.error("Gagal memproses PNG.");
+                          img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(finalSvg);
+                        } else {
+                          const svgBlob = new Blob([finalSvg], { type: "image/svg+xml;charset=utf-8" });
+                          link.href = URL.createObjectURL(svgBlob);
+                          link.click();
+                          toast.success(`Berhasil mengunduh SVG murni (${downloadSize}px).`);
+                        }
                       } catch {
                         toast.error("Gagal mengunduh gambar.");
                       }
