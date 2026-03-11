@@ -9,9 +9,9 @@ export const metadata = {
 
 export default function ApiDocsPage() {
   return (
-    <div className="pb-10">
+    <div className="overflow-x-hidden pb-10">
       <SiteHeader />
-      <main className="mx-auto w-full max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8">
+      <main className="mx-auto w-full max-w-7xl space-y-8 overflow-x-hidden px-4 sm:px-6 lg:px-8">
         <section className="rounded-[36px] border border-white/30 bg-gradient-to-br from-white/55 to-white/35 px-6 py-8 dark:from-white/6 dark:to-white/4 sm:px-8">
           <p className="text-sm uppercase tracking-[0.32em] text-muted-foreground">Developer platform</p>
           <h1 className="font-display mt-3 text-5xl font-semibold tracking-tight sm:text-6xl">OpenAPI style docs untuk generate, decode, webhook, dan widget.</h1>

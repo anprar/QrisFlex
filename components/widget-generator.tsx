@@ -121,6 +121,7 @@ export function WidgetGenerator({
                 level="H"
                 ref={qrCanvasRef}
                 size={220}
+                style={{ maxWidth: "100%", height: "auto" }}
                 value={generated.payload}
               />
               <div className="mt-4 space-y-1">

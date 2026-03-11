@@ -71,8 +71,8 @@ export default function Home() {
               <p>
                 QrisFlex fokus pada pengalaman merchant modern: generate tanpa login, simpan QR statis untuk reuse forever, dan tracking hasil generate secara real-time.
               </p>
-              <div className="marquee overflow-hidden rounded-[26px] border border-border bg-white/35 py-4 dark:bg-white/5">
-                <div className="flex min-w-max items-center gap-10 px-6 text-sm font-semibold uppercase tracking-[0.28em] text-muted-foreground">
+              <div className="marquee w-full max-w-full overflow-hidden rounded-[26px] border border-border bg-white/35 py-4 dark:bg-white/5">
+                <div className="flex w-max items-center gap-10 px-6 text-sm font-semibold uppercase tracking-[0.28em] text-muted-foreground">
                   <span>Unlimited history</span>
                   <span>Webhook callback</span>
                   <span>PWA installable</span>

@@ -48,6 +48,7 @@ if (featureFlags.googleAuth) {
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  secret: env.NEXTAUTH_SECRET || "qrisflex-default-insecure-secret-for-demo",
   trustHost: true,
   session: {
     strategy: "jwt",

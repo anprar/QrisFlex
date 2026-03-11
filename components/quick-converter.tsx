@@ -350,7 +350,7 @@ export function QuickConverter() {
           <div className="rounded-[28px] border border-border bg-white/70 p-5 text-center dark:bg-white/5">
             {generated ? (
               <>
-                <QRCodeCanvas fgColor="#10211b" id="qrisflex-generated-canvas" includeMargin level="H" size={246} value={generated.payload} />
+                <QRCodeCanvas fgColor="#10211b" id="qrisflex-generated-canvas" includeMargin level="H" size={246} style={{ maxWidth: "100%", height: "auto" }} value={generated.payload} />
                 <div className="mt-4 space-y-1">
                   <p className="font-display text-3xl font-semibold">{formatCurrency(generated.total)}</p>
                   <p className="text-sm text-muted-foreground">{generated.merchant.name}</p>
@@ -358,7 +358,7 @@ export function QuickConverter() {
               </>
             ) : sourcePayload ? (
               <>
-                <QRCodeSVG includeMargin level="H" size={246} value={sourcePayload} />
+                <QRCodeSVG includeMargin level="H" size={246} style={{ maxWidth: "100%", height: "auto" }} value={sourcePayload} />
                 <p className="mt-4 text-sm text-muted-foreground">QR statis terdeteksi. Isi nominal lalu generate.</p>
               </>
             ) : (
