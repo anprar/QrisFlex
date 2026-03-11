@@ -14,8 +14,8 @@ import { z } from "zod";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Clock } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { enqueueOfflineItem } from "@/hooks/use-offline-queue";
 import { generateDynamicQris } from "@/lib/qris/generator";
 import { parseQrisPayload, type MerchantInfo } from "@/lib/qris/parser";
@@ -27,6 +27,7 @@ const converterSchema = z
     amount: z.coerce.number().positive("Nominal wajib lebih dari 0."),
     feeType: z.enum(["none", "rp", "percent"]),
     feeValue: z.coerce.number().optional(),
+    expiry: z.enum(["6h", "24h", "3d", "1m", "1y"]),
     notes: z.string().max(25, "Catatan maksimal 25 karakter.").optional(),
   })
   .superRefine((values, context) => {
@@ -47,6 +48,7 @@ interface GeneratedState {
   amount: number;
   merchant: MerchantInfo;
   feeLabel: string;
+  expiryLabel: string;
 }
 
 function toDataUrl(file: File) {
@@ -71,9 +73,10 @@ export function QuickConverter() {
     resolver: zodResolver(converterSchema),
     defaultValues: {
       amount: 25000,
-      feeType: "rp",
-      feeValue: 500,
-      notes: "Order cepat",
+      feeType: "none",
+      feeValue: 0,
+      expiry: "6h",
+      notes: "",
     },
   });
 
@@ -88,6 +91,18 @@ export function QuickConverter() {
 
   const feeType = form.watch("feeType");
   const feeValue = form.watch("feeValue");
+
+  // Auto-reset fee value when fee type changes
+  useEffect(() => {
+    if (feeType === "none") {
+      form.setValue("feeValue", 0);
+    } else {
+      // Set to 0 initially when switched to rp or percent so user doesn't have to delete the old value
+      form.setValue("feeValue", 0);
+    }
+    // Only run on feeType change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [feeType]);
   const feePreview = useMemo(() => {
     if (feeType === "none") {
       return "Tanpa fee";
@@ -186,6 +201,15 @@ export function QuickConverter() {
 
     try {
       const fee = values.feeType === "none" ? undefined : { type: values.feeType, value: values.feeValue ?? 0 };
+      
+      const expiryMap: Record<string, string> = {
+        "6h": "6 Jam",
+        "24h": "24 Jam",
+        "3d": "3 Hari",
+        "1m": "1 Bulan",
+        "1y": "1 Tahun",
+      };
+      const expiryLabel = expiryMap[values.expiry] ?? "6 Jam";
 
       if (!navigator.onLine) {
         const offlineResult = generateDynamicQris({
@@ -201,6 +225,7 @@ export function QuickConverter() {
           amount: values.amount,
           merchant: offlineResult.parsed.merchant,
           feeLabel: feePreview,
+          expiryLabel,
         });
 
         await enqueueOfflineItem({
@@ -241,6 +266,7 @@ export function QuickConverter() {
         amount: payload.amount,
         merchant: payload.merchant,
         feeLabel: feePreview,
+        expiryLabel,
       });
 
       toast.success("QRIS dinamis siap diunduh.");
@@ -319,15 +345,34 @@ export function QuickConverter() {
                   <option value="rp">Fee Rp</option>
                   <option value="percent">Fee %</option>
                 </select>
-                <Input inputMode="numeric" placeholder="500" {...form.register("feeValue")} />
+                <Input
+                  disabled={feeType === "none"}
+                  placeholder={feeType === "percent" ? "0.5" : "500"}
+                  step={feeType === "percent" ? "0.1" : "1"}
+                  type={feeType === "none" ? "text" : "number"}
+                  {...form.register("feeValue")}
+                />
               </div>
               {form.formState.errors.feeValue ? <p className="text-sm text-danger">{form.formState.errors.feeValue.message}</p> : null}
             </div>
-            <div className="space-y-2 sm:col-span-2">
-              <label className="text-sm font-semibold">Catatan transaksi</label>
-              <Textarea placeholder="Contoh: INV-2026-001" rows={4} {...form.register("notes")} />
+            <div className="space-y-2 sm:col-span-1">
+              <label className="text-sm font-semibold">Masa Aktif</label>
+              <select
+                className="h-12 w-full rounded-2xl border border-border bg-white/55 px-4 text-sm text-foreground outline-none transition focus:border-primary focus:shadow-[0_0_0_4px_var(--ring)] dark:bg-white/8"
+                {...form.register("expiry")}
+              >
+                <option value="6h">6 Jam (Free)</option>
+                <option value="24h">24 Jam (Pro)</option>
+                <option value="3d">3 Hari (Pro)</option>
+                <option value="1m">1 Bulan (Pro)</option>
+                <option value="1y">1 Tahun (Pro)</option>
+              </select>
             </div>
-            <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
+            <div className="space-y-2 sm:col-span-1">
+              <label className="text-sm font-semibold">Catatan transaksi</label>
+              <Input placeholder="Opsional (Mis: INV-001)" {...form.register("notes")} />
+            </div>
+            <div className="flex flex-wrap items-center gap-3 sm:col-span-2 mt-2">
               <Button className="w-full sm:w-auto" disabled={isGenerating} size="lg" type="submit">
                 {isGenerating ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                 Generate QR Dinamis
@@ -386,7 +431,7 @@ export function QuickConverter() {
 
           {generated ? (
             <div className="space-y-3">
-              <div className="grid gap-3 rounded-[28px] border border-border px-5 py-4 text-sm md:grid-cols-2">
+              <div className="grid gap-3 rounded-[28px] border border-border bg-white/40 px-5 py-4 text-sm md:grid-cols-3 dark:bg-white/5">
                 <div>
                   <p className="text-muted-foreground">Nominal dasar</p>
                   <p className="font-semibold">{formatCurrency(generated.amount)}</p>
@@ -395,54 +440,88 @@ export function QuickConverter() {
                   <p className="text-muted-foreground">Fee</p>
                   <p className="font-semibold">{generated.feeLabel}</p>
                 </div>
+                <div>
+                  <p className="text-muted-foreground">Masa Aktif</p>
+                  <p className="inline-flex items-center gap-1 font-semibold text-amber-600 dark:text-amber-400">
+                    <Clock className="h-3.5 w-3.5" />
+                    {generated.expiryLabel}
+                  </p>
+                </div>
               </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <Button
-                  className="w-full"
-                  onClick={() => {
-                    const canvas = document.getElementById("qrisflex-generated-canvas") as HTMLCanvasElement | null;
-                    if (!canvas) {
-                      return;
-                    }
+              <div className="mt-4 flex flex-col gap-3 rounded-[28px] border border-border p-5">
+                <p className="font-semibold">Format Download &amp; Share</p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Button
+                    className="w-full text-base font-semibold"
+                    onClick={() => {
+                      const canvas = document.getElementById("qrisflex-generated-canvas") as HTMLCanvasElement | null;
+                      if (!canvas) {
+                        return;
+                      }
 
-                    const link = document.createElement("a");
-                    link.download = `qrisflex-${Date.now()}.png`;
-                    link.href = canvas.toDataURL("image/png");
-                    link.click();
-                  }}
-                  type="button"
-                >
-                  <Download className="h-4 w-4" />
-                  Download PNG
-                </Button>
-                <Button
-                  className="w-full"
-                  onClick={async () => {
-                    if (navigator.share) {
-                      await navigator.share({
-                        title: "QRIS Dinamis QrisFlex",
-                        text: generated.payload,
-                      });
-                    } else {
-                      await navigator.clipboard.writeText(generated.payload);
-                      toast.success("Payload berhasil disalin.");
-                    }
-                  }}
-                  type="button"
-                  variant="secondary"
-                >
-                  <Share2 className="h-4 w-4" />
-                  Share / Copy
-                </Button>
+                      const link = document.createElement("a");
+                      link.download = `QRIS-${generated.merchant.name.replace(/\s+/g, "-")}-${Date.now()}.png`;
+                      link.href = canvas.toDataURL("image/png");
+                      link.click();
+                      toast.success("Gambar PNG berhasil diunduh.");
+                    }}
+                    type="button"
+                    size="lg"
+                  >
+                    <Download className="h-5 w-5" />
+                    Unduh PNG (512px)
+                  </Button>
+                  <Button
+                    className="w-full text-base font-semibold"
+                    onClick={async () => {
+                      try {
+                        if (navigator.share && /mobile|android|iphone/i.test(navigator.userAgent)) {
+                          await navigator.share({
+                            title: "QRIS Dinamis QrisFlex",
+                            text: "Berikut link payload QRIS:",
+                            url: generated.payload,
+                          });
+                        } else {
+                          await navigator.clipboard.writeText(generated.payload);
+                          toast.success("Payload teks berhasil disalin ke clipboard.");
+                        }
+                      } catch {
+                        await navigator.clipboard.writeText(generated.payload);
+                        toast.success("Payload teks berhasil disalin ke clipboard.");
+                      }
+                    }}
+                    type="button"
+                    variant="secondary"
+                    size="lg"
+                  >
+                    <Share2 className="h-5 w-5" />
+                    Salin Payload Teks
+                  </Button>
+                </div>
+                <div className="mt-2 text-center text-sm text-muted-foreground">
+                  Gagal klik tombol? <button 
+                    className="underline hover:text-foreground"
+                    onClick={() => {
+                      const canvas = document.getElementById("qrisflex-generated-canvas") as HTMLCanvasElement | null;
+                      if (canvas) {
+                        const win = window.open("");
+                        if (win) {
+                          win.document.write(`<img src="${canvas.toDataURL("image/png")}" alt="QRIS"/>`);
+                        }
+                      }
+                    }}
+                    type="button"
+                  >Buka gambar di tab baru</button>
+                </div>
               </div>
             </div>
           ) : null}
 
           {status !== "authenticated" ? (
             <div className="rounded-[28px] border border-dashed border-border px-5 py-5 text-sm leading-7 text-muted-foreground">
-              Quick generate tetap bisa dipakai tanpa login. Ingin menyimpan QR statis ke dashboard selamanya?
-              <Link className="ml-2 font-semibold text-foreground underline" href="/sign-in">
-                Masuk sekarang
+              Quick generate tetap bisa dipakai tanpa login. Ingin menyimpan history dan setting durasi lebih lama?
+              <Link className="ml-2 font-semibold text-foreground underline hover:text-primary transition-colors" href="/sign-in">
+                Masuk / Daftar sekarang
               </Link>
             </div>
           ) : null}
