@@ -1,4 +1,5 @@
 import { getBaseUrl } from "@/lib/utils";
+import { sampleQrCatalog } from "@/lib/qris/samples";
 
 export const openApiDocument = {
   openapi: "3.1.0",
@@ -60,7 +61,7 @@ export const apiExamples = {
   curlGenerate: `curl -X POST ${getBaseUrl()}/api/qris/generate \\
   -H "Content-Type: application/json" \\
   -d '{
-    "payload": "000201010211...",
+    "payload": "${sampleQrCatalog[0].payload}",
     "amount": 25000,
     "fee": { "type": "rp", "value": 500 },
     "notes": "Order INV-2026-001"

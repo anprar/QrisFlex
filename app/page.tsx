@@ -82,6 +82,9 @@ export default function Home() {
                   <span>Riwayat unlimited</span>
                   <span>Webhook callback</span>
                   <span>Bisa offline</span>
+                  <span>Dark mode</span>
+                  <span>Widget embed</span>
+                  <span>Gratis selamanya</span>
                 </div>
               </div>
             </CardContent>
@@ -107,23 +110,23 @@ export default function Home() {
         </section>
 
         <section className="grid gap-6 min-w-0 xl:grid-cols-[1.05fr_0.95fr]">
-          <Card className="overflow-hidden rounded-[34px] bg-gradient-to-br from-primary to-[#0a6641] text-primary-foreground">
+          <Card className="overflow-hidden rounded-[34px] border-white/10 bg-gradient-to-br from-[#0e1d17] to-[#0c1813] text-white">
             <CardHeader>
-              <CardDescription className="text-primary-foreground/70">Untuk tim & developer</CardDescription>
-              <CardTitle className="text-4xl text-primary-foreground">API, webhook, dan widget dalam satu paket.</CardTitle>
+              <CardDescription className="text-white/70">Untuk tim & developer</CardDescription>
+              <CardTitle className="text-4xl text-white">API, webhook, dan widget dalam satu paket.</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4 text-primary-foreground/85">
+            <CardContent className="space-y-4 text-white/80">
               <p>
                 Hubungkan sistem kasir, toko online, atau aplikasi Anda langsung ke QrisFlex lewat API sederhana. Terima notifikasi otomatis tiap transaksi via webhook.
               </p>
               <div className="grid gap-4 sm:grid-cols-2">
-                <div className="rounded-[24px] border border-primary-foreground/25 bg-primary-foreground/10 px-4 py-4">
-                  <p className="font-display text-2xl font-semibold text-primary-foreground">100/menit</p>
-                  <p className="text-sm text-primary-foreground/70">Batas generate gratis per pengguna. Tanpa kredit, tanpa tagihan.</p>
+                <div className="rounded-[24px] border border-white/10 bg-white/5 px-4 py-4">
+                  <p className="font-display text-2xl font-semibold text-white">100/menit</p>
+                  <p className="text-sm text-white/70">Batas generate gratis per pengguna. Tanpa kredit, tanpa tagihan.</p>
                 </div>
-                <div className="rounded-[24px] border border-primary-foreground/25 bg-primary-foreground/10 px-4 py-4">
-                  <p className="font-display text-2xl font-semibold text-primary-foreground">Instan</p>
-                  <p className="text-sm text-primary-foreground/70">Respons API cepat, cocok untuk checkout real-time dan kasir digital.</p>
+                <div className="rounded-[24px] border border-white/10 bg-white/5 px-4 py-4">
+                  <p className="font-display text-2xl font-semibold text-white">Instan</p>
+                  <p className="text-sm text-white/70">Respons API cepat, cocok untuk checkout real-time dan kasir digital.</p>
                 </div>
               </div>
             </CardContent>
