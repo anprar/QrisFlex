@@ -1,36 +1,123 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# QrisFlex
 
-## Getting Started
+QrisFlex adalah aplikasi Next.js App Router untuk mengubah QRIS statis menjadi QRIS dinamis dengan UI modern, dashboard analytics, widget iframe, webhook callback, dan PWA offline-ready.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 + React 19 + TypeScript
+- Tailwind CSS 4 + komponen gaya shadcn/ui
+- NextAuth beta (credentials + Google opsional)
+- `qrcode.react` + `@zxing/library` + `jimp`
+- Vercel KV untuk rate limit/cache dan Vercel Postgres untuk analytics/history bila env tersedia
+- PWA service worker + IndexedDB queue untuk sinkronisasi offline
+- Vitest untuk QR encode/decode
+
+## Fitur utama
+
+- Landing page animatif dengan quick generate tanpa login
+- Decode QR statis PNG/JPG, ekstraksi merchant metadata, dan generate QRIS dinamis dengan nominal/fee/catatan
+- Dashboard login-only untuk melihat QR tersimpan, history, top merchant, dan grafik generate
+- API docs gaya OpenAPI di `/api/docs` dan spec JSON di `/api/docs/openapi`
+- Widget iframe di `/widget/[qrisId]` dan endpoint embed helper di `/api/widget/[id]`
+- Webhook callback manual dengan verifikasi HMAC SHA-256
+- Offline-capable PWA: decode/generate lokal, simpan antrean, sinkron saat online
+
+## Menjalankan lokal
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Buat file `.env.local` jika ingin mengaktifkan fitur produksi penuh.
 
-## Learn More
+```env
+NEXTAUTH_SECRET=replace-me
+NEXTAUTH_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 
-To learn more about Next.js, take a look at the following resources:
+AUTH_GOOGLE_ID=
+AUTH_GOOGLE_SECRET=
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+KV_REST_API_URL=
+KV_REST_API_TOKEN=
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+POSTGRES_URL=
+VERCEL_POSTGRES_URL=
 
-## Deploy on Vercel
+BLOB_READ_WRITE_TOKEN=
+WEBHOOK_SECRET=replace-me
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Catatan:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Tanpa KV/Postgres/Blob, aplikasi tetap jalan dengan fallback memory store untuk demo.
+- Jika `AUTH_GOOGLE_ID` dan `AUTH_GOOGLE_SECRET` kosong, login Google disembunyikan otomatis.
+- Jika `WEBHOOK_SECRET` kosong, webhook mode demo menerima signature apa saja.
+
+## Endpoint utama
+
+- `POST /api/qris/generate`
+- `POST /api/qris/decode`
+- `POST /api/qris/webhook`
+- `GET /api/widget/[id]`
+- `GET /api/analytics/overview`
+- `GET /api/analytics/timeseries`
+- `GET|POST /api/history`
+- `GET /api/docs/openapi`
+
+## Deploy
+
+```bash
+vercel --prod
+```
+
+Pengaturan yang direkomendasikan:
+
+- `NEXTAUTH_URL=production.com`
+- Custom domain: `qrisflex.id`
+- Scale: Auto (Edge Functions)
+
+## Vercel runtime notes
+
+- Endpoint ringan seperti health check dan OpenAPI spec dijalankan di Edge Runtime.
+- Decode image, generate dengan fallback base64, webhook verification, dan analytics storage memakai Node runtime.
+- `vercel.json` menambahkan CORS widget, security headers, dan cron cleanup blob.
+
+## Testing
+
+```bash
+npm run test
+```
+
+Yang diuji:
+
+- Validasi CRC QRIS
+- Transformasi statis -> dinamis dengan nominal dan fee
+- Roundtrip encode/decode QR image menggunakan PNG + ZXing
+
+## Seed data
+
+Contoh payload QRIS tersedia di `lib/qris/samples.ts` dan langsung dipakai untuk:
+
+- quick demo landing page
+- dashboard demo
+- widget default
+
+## Struktur singkat
+
+```text
+app/
+components/
+hooks/
+lib/
+public/
+tests/
+auth.ts
+middleware.ts
+vercel.json
+```
