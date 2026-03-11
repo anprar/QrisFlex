@@ -59,19 +59,21 @@ export default function Home() {
         </section>
 
         <section className="grid gap-6 min-w-0 xl:grid-cols-[1fr_1.2fr]">
-          <Card className="h-fit rounded-[34px] border border-white/30 bg-gradient-to-br from-primary/10 to-secondary/15">
+          <Card className="flex flex-col rounded-[34px] border border-white/30 bg-gradient-to-br from-primary/10 to-secondary/15">
             <CardHeader>
               <CardDescription>Kenapa QrisFlex?</CardDescription>
               <CardTitle className="text-4xl">Lebih cepat, lebih fleksibel.</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4 text-base leading-8 text-muted-foreground">
-              <p>
-                QrisFlex dirancang agar siapa saja bisa langsung pakai — kasir, UMKM, developer, hingga pemilik toko online — tanpa perlu daftar atau beli lisensi.
-              </p>
-              <p>
-                Dari satu QR statis, Anda bisa generate dinamis dengan nominal berbeda, tambahkan fee, catatan, dan embed di website lain dalam hitungan detik.
-              </p>
-              <div className="overflow-hidden rounded-[26px] border border-border bg-white/35 py-4 dark:bg-white/5">
+            <CardContent className="flex flex-1 flex-col justify-between space-y-6 text-base leading-8 text-muted-foreground">
+              <div className="space-y-4">
+                <p>
+                  QrisFlex dirancang agar siapa saja bisa langsung pakai — kasir, UMKM, developer, hingga pemilik toko online — tanpa perlu daftar atau beli lisensi.
+                </p>
+                <p>
+                  Dari satu QR statis, Anda bisa generate dinamis dengan nominal berbeda, tambahkan fee, catatan, dan embed di website lain dalam hitungan detik.
+                </p>
+              </div>
+              <div className="overflow-hidden rounded-[26px] border border-border bg-white/35 py-4 [mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)] dark:bg-white/5">
                 <div className="marquee-inner flex w-max items-center gap-10 px-6 text-sm font-semibold uppercase tracking-[0.28em] text-muted-foreground">
                   <span>Riwayat unlimited</span>
                   <span>Webhook callback</span>
