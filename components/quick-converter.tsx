@@ -396,8 +396,9 @@ export function QuickConverter() {
                   <p className="font-semibold">{generated.feeLabel}</p>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-3">
+              <div className="grid gap-3 sm:grid-cols-2">
                 <Button
+                  className="w-full"
                   onClick={() => {
                     const canvas = document.getElementById("qrisflex-generated-canvas") as HTMLCanvasElement | null;
                     if (!canvas) {
@@ -415,6 +416,7 @@ export function QuickConverter() {
                   Download PNG
                 </Button>
                 <Button
+                  className="w-full"
                   onClick={async () => {
                     if (navigator.share) {
                       await navigator.share({
