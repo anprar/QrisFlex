@@ -175,8 +175,8 @@ body::before {
   animation: pulse-glow 6s ease-in-out infinite;
 }
 
-.marquee div {
-  animation: marquee 20s linear infinite;
+.marquee-inner {
+  animation: marquee 22s linear infinite;
 }
 
 .scrollbar-thin::-webkit-scrollbar {

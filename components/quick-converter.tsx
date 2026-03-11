@@ -328,7 +328,7 @@ export function QuickConverter() {
               <Textarea placeholder="Contoh: INV-2026-001" rows={4} {...form.register("notes")} />
             </div>
             <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
-              <Button disabled={isGenerating} size="lg" type="submit">
+              <Button className="w-full sm:w-auto" disabled={isGenerating} size="lg" type="submit">
                 {isGenerating ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                 Generate QR Dinamis
               </Button>
@@ -350,7 +350,9 @@ export function QuickConverter() {
           <div className="rounded-[28px] border border-border bg-white/70 p-5 text-center dark:bg-white/5">
             {generated ? (
               <>
-                <QRCodeCanvas fgColor="#10211b" id="qrisflex-generated-canvas" includeMargin level="H" size={246} style={{ maxWidth: "100%", height: "auto" }} value={generated.payload} />
+                <div className="flex justify-center">
+                  <QRCodeCanvas fgColor="#10211b" id="qrisflex-generated-canvas" includeMargin level="H" size={220} style={{ maxWidth: "100%", height: "auto" }} value={generated.payload} />
+                </div>
                 <div className="mt-4 space-y-1">
                   <p className="font-display text-3xl font-semibold">{formatCurrency(generated.total)}</p>
                   <p className="text-sm text-muted-foreground">{generated.merchant.name}</p>
@@ -358,7 +360,9 @@ export function QuickConverter() {
               </>
             ) : sourcePayload ? (
               <>
-                <QRCodeSVG includeMargin level="H" size={246} style={{ maxWidth: "100%", height: "auto" }} value={sourcePayload} />
+                <div className="flex justify-center">
+                  <QRCodeSVG includeMargin level="H" size={220} style={{ maxWidth: "100%", height: "auto" }} value={sourcePayload} />
+                </div>
                 <p className="mt-4 text-sm text-muted-foreground">QR statis terdeteksi. Isi nominal lalu generate.</p>
               </>
             ) : (

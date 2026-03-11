@@ -1,4 +1,4 @@
-import { ArrowUpRight, Gauge, Globe2, Radio, Sparkles, Zap } from "lucide-react";
+import { Gauge, Globe2, Radio, Sparkles, Zap, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
 import { HowItWorksCarousel } from "@/components/how-it-works-carousel";
@@ -11,23 +11,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 const featureHighlights = [
   {
-    title: "Deploy edge-ready di Vercel",
-    description: "App Router, React Server Components, dan API endpoints siap dibagi antara Edge dan Node runtime.",
+    title: "Kecepatan & Kemudahan",
+    description: "Generate QRIS dinamis dalam hitungan detik. Tidak perlu daftar, tidak perlu konfigurasi rumit.",
     icon: Zap,
   },
   {
-    title: "Dashboard analytics real-time",
-    description: "Pantau generate harian, nominal diproses, merchant teratas, dan webhook delivery tanpa refresh manual.",
+    title: "Dashboard analitik",
+    description: "Pantau riwayat generate harian, total nominal, dan merchant aktif langsung dari dasbor Anda.",
     icon: Gauge,
   },
   {
-    title: "Widget iframe untuk website lain",
-    description: "Tempel generator QR di landing checkout, microsite event, atau katalog digital dengan callback opsional.",
+    title: "Widget embed siap pakai",
+    description: "Tempel generator QR di halaman checkout, microsite event, atau katalog digital dengan mudah.",
     icon: Globe2,
   },
   {
-    title: "Offline decode + sync",
-    description: "PWA tetap bisa decode dan generate saat sinyal hilang, lalu menyinkronkan riwayat ketika koneksi kembali.",
+    title: "Bisa dipakai offline",
+    description: "Generate QRIS tetap berjalan meski tanpa koneksi internet, dan sinkronisasi otomatis saat online kembali.",
     icon: Radio,
   },
 ];
@@ -36,20 +36,20 @@ export default function Home() {
   return (
     <div className="overflow-x-hidden pb-10">
       <SiteHeader />
-      <main className="mx-auto flex w-full max-w-7xl flex-col gap-16 overflow-x-hidden px-4 sm:px-6 lg:px-8">
+      <main className="mx-auto flex w-full max-w-7xl flex-col gap-12 overflow-x-hidden px-4 sm:px-6 lg:px-8">
         <section className="relative overflow-hidden rounded-[42px] border border-white/35 bg-gradient-to-br from-[#fbf6ec]/70 via-[#fff8ef]/40 to-[#d5f6e8]/30 px-6 py-8 shadow-[0_30px_100px_rgba(19,41,33,0.12)] sm:px-10 sm:py-12 dark:from-[#0d1d16]/90 dark:via-[#0e2018]/75 dark:to-[#0c2420]/70">
           <div className="mb-10 flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap gap-3">
-              <Badge>Biaya gratis mulai sekarang</Badge>
-              <Badge variant="amber">API + webhook siap integrasi</Badge>
+              <Badge>Gratis tanpa login</Badge>
+              <Badge variant="amber">API & Webhook siap pakai</Badge>
             </div>
             <div className="hidden items-center gap-3 lg:flex">
               <Button asChild variant="ghost">
-                <Link href="/api/docs">Lihat endpoint</Link>
+                <Link href="/api/docs">Lihat API Docs</Link>
               </Button>
               <Button asChild>
                 <Link href="/dashboard">
-                  Dashboard demo
+                  Dashboard
                   <ArrowUpRight className="h-4 w-4" />
                 </Link>
               </Button>
@@ -61,27 +61,27 @@ export default function Home() {
         <section className="grid gap-6 min-w-0 xl:grid-cols-[1fr_1.2fr]">
           <Card className="rounded-[34px] border border-white/30 bg-gradient-to-br from-primary/10 to-secondary/15">
             <CardHeader>
-              <CardDescription>Why QrisFlex wins</CardDescription>
-              <CardTitle className="text-4xl">Lebih cepat, lebih fleksibel, lebih siap scale.</CardTitle>
+              <CardDescription>Kenapa QrisFlex?</CardDescription>
+              <CardTitle className="text-4xl">Lebih cepat, lebih fleksibel.</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-base leading-8 text-muted-foreground">
               <p>
-                Dibuat untuk performa Vercel: landing terasa instan, API bisa dibagi per runtime, dan widget tetap ringan walau penuh animasi.
+                QrisFlex dirancang agar siapa saja bisa langsung pakai — kasir, UMKM, developer, hingga pemilik toko online — tanpa perlu daftar atau beli lisensi.
               </p>
               <p>
-                QrisFlex fokus pada pengalaman merchant modern: generate tanpa login, simpan QR statis untuk reuse forever, dan tracking hasil generate secara real-time.
+                Dari satu QR statis, Anda bisa generate dinamis dengan nominal berbeda, tambahkan fee, catatan, dan embed di website lain dalam hitungan detik.
               </p>
-              <div className="marquee w-full max-w-full overflow-hidden rounded-[26px] border border-border bg-white/35 py-4 dark:bg-white/5">
-                <div className="flex w-max items-center gap-10 px-6 text-sm font-semibold uppercase tracking-[0.28em] text-muted-foreground">
-                  <span>Unlimited history</span>
+              <div className="overflow-hidden rounded-[26px] border border-border bg-white/35 py-4 dark:bg-white/5">
+                <div className="marquee-inner flex w-max items-center gap-10 px-6 text-sm font-semibold uppercase tracking-[0.28em] text-muted-foreground">
+                  <span>Riwayat unlimited</span>
                   <span>Webhook callback</span>
-                  <span>PWA installable</span>
+                  <span>Bisa offline</span>
                   <span>Dark mode</span>
-                  <span>Embed widget</span>
-                  <span>Vitest covered</span>
-                  <span>Unlimited history</span>
+                  <span>Widget embed</span>
+                  <span>Gratis selamanya</span>
+                  <span>Riwayat unlimited</span>
                   <span>Webhook callback</span>
-                  <span>PWA installable</span>
+                  <span>Bisa offline</span>
                 </div>
               </div>
             </CardContent>
@@ -109,21 +109,21 @@ export default function Home() {
         <section className="grid gap-6 min-w-0 xl:grid-cols-[1.05fr_0.95fr]">
           <Card className="overflow-hidden rounded-[34px] bg-gradient-to-br from-[#0d1714] to-[#10211b] text-white">
             <CardHeader>
-              <CardDescription className="text-white/70">For growth teams</CardDescription>
-              <CardTitle className="text-4xl">API docs, webhook, dan widget dalam satu workflow.</CardTitle>
+              <CardDescription className="text-white/70">Untuk tim & developer</CardDescription>
+              <CardTitle className="text-4xl">API, webhook, dan widget dalam satu paket.</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-white/75">
               <p>
-                Tim engineering bisa mulai dari landing generator, lalu naik ke widget iframe, webhook callback, dan analytics dashboard tanpa memisahkan repo lain.
+                Hubungkan sistem kasir, toko online, atau aplikasi Anda langsung ke QrisFlex lewat API sederhana. Terima notifikasi otomatis tiap transaksi via webhook.
               </p>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="rounded-[24px] border border-white/10 bg-white/6 px-4 py-4">
-                  <p className="font-display text-2xl font-semibold">100/min</p>
-                  <p className="text-sm text-white/70">Rate limit free plan, pro bypass via session.</p>
+                  <p className="font-display text-2xl font-semibold">100/menit</p>
+                  <p className="text-sm text-white/70">Batas generate gratis per pengguna. Tanpa kredit, tanpa tagihan.</p>
                 </div>
                 <div className="rounded-[24px] border border-white/10 bg-white/6 px-4 py-4">
-                  <p className="font-display text-2xl font-semibold">TTFB &lt; 100ms</p>
-                  <p className="text-sm text-white/70">Target untuk endpoint cacheable dan widget config di edge.</p>
+                  <p className="font-display text-2xl font-semibold">Instan</p>
+                  <p className="text-sm text-white/70">Respons API cepat, cocok untuk checkout real-time dan kasir digital.</p>
                 </div>
               </div>
             </CardContent>
@@ -131,21 +131,21 @@ export default function Home() {
 
           <Card className="rounded-[34px] border border-white/30 bg-gradient-to-br from-secondary/15 to-white/25">
             <CardHeader>
-              <CardDescription>Launch ready checklist</CardDescription>
-              <CardTitle className="text-4xl">Sudah disiapkan untuk produksi</CardTitle>
+              <CardDescription>Fitur siap pakai</CardDescription>
+              <CardTitle className="text-4xl">Lengkap sejak hari pertama</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-sm leading-7 text-muted-foreground">
               <div className="flex items-start gap-3 rounded-[22px] border border-border px-4 py-4">
                 <Sparkles className="mt-1 h-4 w-4 text-primary" />
-                App Router + SEO metadata + robots + sitemap + dark mode toggle.
+                Generate QRIS dinamis, unduh PNG, embed widget, atau share langsung.
               </div>
               <div className="flex items-start gap-3 rounded-[22px] border border-border px-4 py-4">
                 <Sparkles className="mt-1 h-4 w-4 text-primary" />
-                NextAuth beta credentials flow dengan Google opsional via env.
+                Login sekali untuk simpan QR statis, kelola riwayat, dan akses analitik merchant.
               </div>
               <div className="flex items-start gap-3 rounded-[22px] border border-border px-4 py-4">
                 <Sparkles className="mt-1 h-4 w-4 text-primary" />
-                Vercel Blob auto-expire hook, KV rate limit, dan Postgres analytics fallback memory-safe.
+                Tetap bisa generate saat offline. Data tersinkron otomatis ketika koneksi kembali.
               </div>
             </CardContent>
           </Card>
