@@ -35,8 +35,8 @@ export default function Home() {
   return (
     <div className="overflow-x-hidden pb-10">
       <SiteHeader />
-      <main className="mx-auto flex w-full max-w-7xl flex-col gap-12 overflow-x-hidden px-4 sm:px-6 lg:px-8">
-        <section className="relative overflow-hidden rounded-[42px] border border-white/35 bg-gradient-to-br from-[#fbf6ec]/70 via-[#fff8ef]/40 to-[#d5f6e8]/30 px-6 py-8 shadow-[0_30px_100px_rgba(19,41,33,0.12)] sm:px-10 sm:py-12 dark:from-[#0d1d16]/90 dark:via-[#0e2018]/75 dark:to-[#0c2420]/70">
+      <main className="mx-auto flex w-full max-w-7xl flex-col gap-10 overflow-x-hidden px-4 sm:gap-12 sm:px-6 lg:px-8">
+        <section className="relative overflow-hidden rounded-[32px] border border-white/35 bg-gradient-to-br from-[#fbf6ec]/70 via-[#fff8ef]/40 to-[#d5f6e8]/30 px-4 py-6 shadow-[0_30px_100px_rgba(19,41,33,0.12)] sm:rounded-[42px] sm:px-10 sm:py-12 dark:from-[#0d1d16]/90 dark:via-[#0e2018]/75 dark:to-[#0c2420]/70">
           <div className="mb-10 flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap gap-3">
               <Badge>Gratis tanpa login</Badge>
@@ -57,7 +57,7 @@ export default function Home() {
           <QuickConverter />
         </section>
 
-        <section className="grid gap-5 md:grid-cols-2 min-w-0 xl:grid-cols-4">
+        <section className="grid min-w-0 gap-5 md:grid-cols-2 xl:grid-cols-4">
           {featureHighlights.map((item) => {
             const Icon = item.icon;
             return (
@@ -74,11 +74,11 @@ export default function Home() {
           })}
         </section>
 
-        <section className="grid gap-6 min-w-0 xl:grid-cols-[1.05fr_0.95fr]">
+        <section className="grid min-w-0 gap-6 xl:grid-cols-[1.05fr_0.95fr]">
           <Card className="overflow-hidden rounded-[34px] border-white/10 bg-gradient-to-br from-[#0e1d17] to-[#0c1813] text-white">
             <CardHeader>
               <CardDescription className="text-white/70">Untuk tim & developer</CardDescription>
-              <CardTitle className="text-4xl text-white">API, webhook, dan widget dalam satu paket.</CardTitle>
+              <CardTitle className="text-3xl text-white sm:text-4xl">API, webhook, dan widget dalam satu paket.</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-white/80">
               <p>
@@ -100,7 +100,7 @@ export default function Home() {
           <Card className="rounded-[34px] border border-border bg-gradient-to-br from-secondary/20 to-secondary/5">
             <CardHeader>
               <CardDescription>Fitur siap pakai</CardDescription>
-              <CardTitle className="text-4xl">Lengkap sejak hari pertama</CardTitle>
+              <CardTitle className="text-3xl sm:text-4xl">Lengkap sejak hari pertama</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-sm leading-7 text-muted-foreground">
               <div className="flex items-start gap-3 rounded-[22px] border border-border px-4 py-4">

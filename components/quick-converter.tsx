@@ -335,14 +335,14 @@ export function QuickConverter() {
   });
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr] min-w-0">
+    <div className="grid min-w-0 gap-6 xl:grid-cols-[1.2fr_0.8fr]">
       <Card className="hero-shell overflow-hidden rounded-[36px] border border-white/35 bg-gradient-to-br from-white/70 via-white/50 to-white/35 dark:from-white/6 dark:via-white/5 dark:to-white/4">
         <CardHeader>
           <div className="flex flex-wrap items-center gap-3">
             <Badge>Guest mode aktif</Badge>
             <Badge variant="amber">Offline-capable PWA</Badge>
           </div>
-          <CardTitle className="max-w-3xl text-4xl leading-tight sm:text-5xl">
+          <CardTitle className="max-w-3xl text-3xl leading-tight sm:text-5xl">
             Ubah QRIS Statis -&gt; Dinamis dalam 3 detik. Gratis, unlimited, API ready.
           </CardTitle>
           <CardDescription className="max-w-3xl text-base leading-8">
@@ -351,7 +351,7 @@ export function QuickConverter() {
         </CardHeader>
         <CardContent className="space-y-6">
           <div
-            className={`rounded-[32px] border border-dashed border-border px-6 py-8 transition ${dropzone.isDragActive ? "bg-primary/8" : "bg-white/30 dark:bg-white/4"}`}
+            className={`rounded-[32px] border border-dashed border-border px-4 py-6 transition sm:px-6 sm:py-8 ${dropzone.isDragActive ? "bg-primary/8" : "bg-white/30 dark:bg-white/4"}`}
             {...dropzone.getRootProps()}
           >
             <input {...dropzone.getInputProps()} />
@@ -360,7 +360,7 @@ export function QuickConverter() {
                 {isDecoding ? <LoaderCircle className="h-7 w-7 animate-spin" /> : <ImageUp className="h-7 w-7" />}
               </div>
               <div>
-                <p className="font-display text-2xl font-semibold">Drag & drop QRIS PNG/JPG</p>
+                <p className="font-display text-xl font-semibold sm:text-2xl">Drag & drop QRIS PNG/JPG</p>
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">
                   Maks. 5MB, decode lokal dulu. Kalau gagal, otomatis fallback ke server decode saat online.
                 </p>
@@ -371,7 +371,7 @@ export function QuickConverter() {
             </div>
           </div>
 
-          <form className="grid gap-4 sm:grid-cols-2 mt-2" onSubmit={generate}>
+          <form className="mt-2 grid gap-4 sm:grid-cols-2" onSubmit={generate}>
             <div className="space-y-2 sm:col-span-1">
               <label className="text-sm font-semibold">Nominal (Rp)</label>
               <Input inputMode="numeric" placeholder="25000" {...form.register("amount")} />
@@ -379,7 +379,7 @@ export function QuickConverter() {
             </div>
             <div className="space-y-2 sm:col-span-1">
               <label className="text-sm font-semibold">Fee</label>
-              <div className="grid grid-cols-[140px_1fr] gap-3">
+              <div className="grid gap-3 sm:grid-cols-[140px_minmax(0,1fr)]">
                 <select
                   className="h-12 rounded-2xl border border-border bg-white/55 px-4 text-sm text-foreground outline-none transition focus:border-primary focus:shadow-[0_0_0_4px_var(--ring)] dark:bg-white/8"
                   {...form.register("feeType")}
@@ -415,12 +415,12 @@ export function QuickConverter() {
               <label className="text-sm font-semibold">Catatan transaksi</label>
               <Input placeholder="Opsional (Mis: INV-001)" {...form.register("notes")} />
             </div>
-            <div className="flex flex-wrap items-center gap-3 sm:col-span-2 mt-2">
+            <div className="mt-2 flex flex-col items-stretch gap-3 sm:col-span-2 sm:flex-row sm:items-center">
               <Button className="w-full sm:w-auto" disabled={isGenerating} size="lg" type="submit">
                 {isGenerating ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                 Generate QR Dinamis
               </Button>
-              <div className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-3 text-sm text-muted-foreground">
+              <div className="flex w-full items-center justify-center gap-2 rounded-full border border-border px-4 py-3 text-center text-sm leading-6 text-muted-foreground sm:w-auto">
                 <ShieldCheck className="h-4 w-4 text-primary" />
                 Payload tervalidasi CRC dan fee: {feePreview}
               </div>
@@ -432,10 +432,10 @@ export function QuickConverter() {
       <Card className="surface-strong rounded-[36px] border border-white/30">
         <CardHeader>
           <CardDescription>Preview QR hasil generate</CardDescription>
-          <CardTitle className="text-3xl">Siap unduh, share, atau embed</CardTitle>
+          <CardTitle className="text-2xl sm:text-3xl">Siap unduh, share, atau embed</CardTitle>
         </CardHeader>
         <CardContent className="space-y-5">
-          <div className="rounded-[28px] border border-border bg-white/70 p-5 text-center dark:bg-white/5">
+          <div className="rounded-[28px] border border-border bg-white/70 p-4 text-center dark:bg-white/5 sm:p-5">
             {generated ? (
               <>
                 <div className="flex justify-center">
@@ -450,7 +450,7 @@ export function QuickConverter() {
                   />
                 </div>
                 <div className="mt-4 space-y-1">
-                  <p className="font-display text-3xl font-semibold">{formatCurrency(generated.total)}</p>
+                  <p className="font-display text-2xl font-semibold sm:text-3xl">{formatCurrency(generated.total)}</p>
                   <p className="text-sm text-muted-foreground">{generated.merchant.name}</p>
                 </div>
               </>
@@ -470,7 +470,7 @@ export function QuickConverter() {
           </div>
 
           {merchant ? (
-            <div className="rounded-[28px] border border-border px-5 py-4 text-sm leading-7">
+            <div className="rounded-[28px] border border-border px-5 py-4 text-sm leading-7 break-words">
               <p className="font-semibold">Merchant</p>
               <p>{merchant.name}</p>
               <p className="text-muted-foreground">
@@ -630,7 +630,7 @@ export function QuickConverter() {
           {status !== "authenticated" ? (
             <div className="rounded-[28px] border border-dashed border-border px-5 py-5 text-sm leading-7 text-muted-foreground">
               Quick generate tetap bisa dipakai tanpa login. Ingin menyimpan history dan setting durasi lebih lama?
-              <Link className="ml-2 font-semibold text-foreground underline hover:text-primary transition-colors" href="/sign-in">
+              <Link className="block pt-1 font-semibold text-foreground underline transition-colors hover:text-primary sm:ml-2 sm:inline sm:pt-0" href="/sign-in">
                 Masuk / Daftar sekarang
               </Link>
             </div>

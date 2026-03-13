@@ -23,8 +23,8 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 mx-auto w-full max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
       <div className="surface-strong rounded-[28px] border border-white/30 px-4 py-3 shadow-[0_18px_60px_rgba(19,41,33,0.15)] sm:px-6">
-        <div className="flex items-center justify-between gap-4">
-          <BrandLogo />
+        <div className="flex min-w-0 items-center justify-between gap-4">
+          <BrandLogo className="min-w-0 flex-1 lg:flex-none" />
           <nav className="hidden items-center gap-2 lg:flex">
             {navItems.map((item) => (
               <Link
@@ -63,7 +63,7 @@ export function SiteHeader() {
           </div>
           <button
             aria-label="Buka menu"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border lg:hidden"
+            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border lg:hidden"
             onClick={() => setOpen((value) => !value)}
             type="button"
           >
@@ -77,7 +77,7 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
-            <div className="flex items-center gap-3 px-2 pt-2">
+            <div className="flex flex-wrap items-center gap-3 px-2 pt-2">
               <ThemeToggle />
               {session ? (
                 <Button className="flex-1" onClick={() => signOut({ redirectTo: "/" })} variant="outline">
