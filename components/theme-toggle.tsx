@@ -16,7 +16,7 @@ export function ThemeToggle() {
         "inline-flex h-10 items-center gap-2 rounded-full border border-border px-4 text-sm font-semibold transition hover:border-primary/40",
         isDark
           ? "bg-white/10 text-amber-300 hover:bg-white/15"
-          : "bg-black/5 text-slate-700 hover:bg-black/8",
+          : "bg-black/5 text-foreground hover:bg-black/8",
       )}
       onClick={() => setTheme(isDark ? "light" : "dark")}
       type="button"
