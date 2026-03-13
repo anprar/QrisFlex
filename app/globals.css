@@ -109,13 +109,13 @@ body::before {
 }
 
 .surface {
-  background: var(--card);
+  background-color: var(--card);
   box-shadow: var(--shadow);
   backdrop-filter: blur(24px);
 }
 
 .surface-strong {
-  background: var(--card-strong);
+  background-color: var(--card-strong);
   box-shadow: var(--shadow);
   backdrop-filter: blur(28px);
 }
